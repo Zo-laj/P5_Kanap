@@ -6,8 +6,8 @@ const colors = document.getElementById("colors");
 
 let product = [];
 
-var url = new URL(window.location.href);
-var id = url.searchParams.get("id");
+let url = new URL(window.location.href);
+let id = url.searchParams.get("id");
 
 const fetchProduct = async () => {
   await fetch("http://localhost:3000/api/products/" + id)
