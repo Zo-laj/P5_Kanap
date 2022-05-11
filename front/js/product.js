@@ -1,28 +1,22 @@
-const template = document.getElementById("productTemplate");
-const itemSection = document.querySelector(".item");
-
-let product = [];
+// import { addProductToCart } from "./local-storage";
 
 const id = new URL(window.location.href).searchParams.get("id");
 
+let product = [];
+
 const fetchProduct = async () => {
-  await fetch("http://localhost:3000/api/products/" + id)
-    .then((res) => res.json())
-    .then((data) => (product = data));
+  const result = await fetch("http://localhost:3000/api/products/" + id);
+  product = await result.json();
 };
 
 const productDisplay = async () => {
   await fetchProduct();
 
-  const clone = document.importNode(template.content, true);
-
-  clone.querySelector("img").setAttribute("src", product.imageUrl);
-  clone.querySelector("img").setAttribute("alt", product.altTxt);
-  clone.getElementById("title").textContent = product.name;
-  clone.getElementById("price").textContent = product.price;
-  clone.getElementById("description").textContent = product.description;
-
-  itemSection.appendChild(clone);
+  document.getElementById("itemImg").setAttribute("src", product.imageUrl);
+  document.getElementById("itemImg").setAttribute("alt", product.altTxt);
+  document.getElementById("title").textContent = product.name;
+  document.getElementById("price").textContent = product.price;
+  document.getElementById("description").textContent = product.description;
 
   product.colors.forEach((color) => {
     const colorOption = document.createElement("option");
@@ -35,3 +29,13 @@ const productDisplay = async () => {
 };
 
 productDisplay();
+
+// document
+//   .getElementById("addToCart")
+//   .addEventListener("click", () =>
+//     addProductToCart(
+//       id,
+//       document.getElementById("colors")?.value,
+//       document.getElementById("quantity")?.value
+//     )
+//   );
