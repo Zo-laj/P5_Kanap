@@ -1,8 +1,5 @@
-const itemImg = document.getElementById("itemImg");
-const title = document.getElementById("title");
-const price = document.getElementById("price");
-const description = document.getElementById("description");
-const colors = document.getElementById("colors");
+const template = document.getElementById("productTemplate");
+const itemSection = document.querySelector(".item");
 
 let product = [];
 
@@ -17,19 +14,24 @@ const fetchProduct = async () => {
 const productDisplay = async () => {
   await fetchProduct();
 
-  let color = "";
+  const clone = document.importNode(template.content, true);
 
-  product.colors.forEach((element) => {
-    color += `
-      <option value="${element}">${element}</option>
-      `;
+  clone.querySelector("img").setAttribute("src", product.imageUrl);
+  clone.querySelector("img").setAttribute("alt", product.altTxt);
+  clone.getElementById("title").textContent = product.name;
+  clone.getElementById("price").textContent = product.price;
+  clone.getElementById("description").textContent = product.description;
+
+  itemSection.appendChild(clone);
+
+  product.colors.forEach((color) => {
+    const colorOption = document.createElement("option");
+
+    colorOption.setAttribute("value", color);
+    colorOption.textContent = color;
+
+    document.getElementById("colors").appendChild(colorOption);
   });
-
-  itemImg.innerHTML = `<img src="${product.imageUrl}" alt="${product.altTxt}">`;
-  title.innerHTML = product.name;
-  price.innerHTML = product.price;
-  description.innerHTML = product.description;
-  colors.innerHTML = color;
 };
 
 productDisplay();
