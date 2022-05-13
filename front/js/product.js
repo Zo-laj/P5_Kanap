@@ -30,12 +30,12 @@ const productDisplay = async () => {
 
 productDisplay();
 
-// document
-//   .getElementById("addToCart")
-//   .addEventListener("click", () =>
-//     addProductToCart(
-//       id,
-//       document.getElementById("colors")?.value,
-//       document.getElementById("quantity")?.value
-//     )
-//   );
+document
+  .getElementById("addToCart")
+  .addEventListener("click", () =>
+    addProductToCart(
+      id,
+      document.getElementById("colors")?.value,
+      document.getElementById("quantity")?.value
+    )
+  );

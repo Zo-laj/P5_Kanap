@@ -4,9 +4,8 @@ const itemsSection = document.querySelector("#items");
 let items = [];
 
 const fetchItems = async () => {
-  await fetch("http://localhost:3000/api/products")
-    .then((res) => res.json())
-    .then((data) => (items = data));
+  const result = await fetch("http://localhost:3000/api/products");
+  items = await result.json();
 };
 
 const displayItems = async () => {
