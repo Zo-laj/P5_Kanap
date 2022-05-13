@@ -1,6 +1,5 @@
 const template = document.querySelector("#productsTemplate");
 const itemsSection = document.querySelector("#items");
-
 let items = [];
 
 const fetchItems = async () => {
