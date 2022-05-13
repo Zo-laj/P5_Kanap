@@ -16,7 +16,7 @@ const displayCart = async () => {
   cart.forEach((cartItem) => {
     const clone = document.importNode(template.content, true);
     const cartItemInfo = itemsData.find(
-      (product) => product.id === cartItem.id
+      (product) => product._id == cartItem.id
     );
     console.log(cartItemInfo);
 
