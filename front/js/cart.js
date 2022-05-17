@@ -5,10 +5,10 @@ const fetchItems = async () => {
   itemsData = await result.json();
 };
 
-const displayCart = async () => {
+const displayCart = async (cart) => {
   await fetchItems();
 
-  productsLocalStorage.forEach((cartItem) => {
+  cart.map((cartItem) => {
     const clone = document.importNode(
       document.querySelector("#cartTemplate").content,
       true
@@ -33,27 +33,42 @@ const displayCart = async () => {
     document.getElementById("cart__items").appendChild(clone);
   });
   deleteProductFromCart();
+  TotalPriceAndQuantity(productsLocalStorage);
 };
 
-displayCart();
+displayCart(productsLocalStorage);
 
 function deleteProductFromCart() {
   document.querySelectorAll(".deleteItem").forEach((btn) => {
-    const datasetId = btn.closest("article").getAttribute("data-id");
-    const datasetColor = btn.closest("article").getAttribute("data-color");
-
     btn.addEventListener("click", () => {
       const newCart = productsLocalStorage.filter((product) => {
-        return product.id !== datasetId && product.color != datasetColor;
+        return (
+          product.id !== btn.closest("article").getAttribute("data-id") &&
+          product.color != btn.closest("article").getAttribute("data-color")
+        );
       });
+
       console.log(productsLocalStorage);
       console.log(newCart);
-      console.log(datasetColor);
-      console.log(datasetId);
 
-      productsLocalStorage = newCart;
-
-      setCart(productsLocalStorage);
+      setCart(newCart);
+      displayCart(newCart);
     });
   });
 }
+
+const TotalPriceAndQuantity = async (cart) => {
+  await fetchItems();
+
+  let totalQuantity = 0;
+  let totalPrice = 0;
+
+  cart.forEach((cartItem) => {
+    const itemInfo = itemsData.find((product) => product._id == cartItem.id);
+    totalQuantity = totalQuantity + Number(cartItem.quantity);
+    totalPrice = totalPrice + Number(cartItem.quantity) * itemInfo.price;
+  });
+
+  document.getElementById("totalQuantity").textContent = totalQuantity;
+  document.getElementById("totalPrice").textContent = totalPrice;
+};
