@@ -1,6 +1,3 @@
-const template = document.querySelector("#cartTemplate");
-const cartItemsSection = document.getElementById("cart__items");
-
 let itemsData = [];
 
 const fetchItems = async () => {
@@ -11,21 +8,21 @@ const fetchItems = async () => {
 const displayCart = async () => {
   await fetchItems();
 
-  let cart = getCart();
-
-  cart.forEach((cartItem) => {
-    const clone = document.importNode(template.content, true);
+  productsLocalStorage.forEach((cartItem) => {
+    const clone = document.importNode(
+      document.querySelector("#cartTemplate").content,
+      true
+    );
     const cartItemInfo = itemsData.find(
       (product) => product._id == cartItem.id
     );
-    console.log(cartItemInfo);
 
-    clone.querySelector("img").setAttribute("src", cartItemInfo.imageUrl);
-    clone.querySelector("img").setAttribute("alt", cartItemInfo.altTxt);
     clone.querySelector(".cart__item").setAttribute("data-id", cartItem.id);
     clone
       .querySelector(".cart__item")
       .setAttribute("data-color", cartItem.color);
+    clone.querySelector("img").setAttribute("src", cartItemInfo.imageUrl);
+    clone.querySelector("img").setAttribute("alt", cartItemInfo.altTxt);
     clone.getElementById("cartItemName").textContent = cartItemInfo.name;
     clone.getElementById("cartItemColor").textContent = cartItem.color;
     clone.getElementById(
@@ -33,8 +30,30 @@ const displayCart = async () => {
     ).textContent = `${cartItemInfo.price} €`;
     clone.querySelector("input").setAttribute("value", cartItem.quantity);
 
-    cartItemsSection.appendChild(clone);
+    document.getElementById("cart__items").appendChild(clone);
   });
+  deleteProductFromCart();
 };
 
 displayCart();
+
+function deleteProductFromCart() {
+  document.querySelectorAll(".deleteItem").forEach((btn) => {
+    const datasetId = btn.closest("article").getAttribute("data-id");
+    const datasetColor = btn.closest("article").getAttribute("data-color");
+
+    btn.addEventListener("click", () => {
+      const newCart = productsLocalStorage.filter((product) => {
+        return product.id !== datasetId && product.color != datasetColor;
+      });
+      console.log(productsLocalStorage);
+      console.log(newCart);
+      console.log(datasetColor);
+      console.log(datasetId);
+
+      productsLocalStorage = newCart;
+
+      setCart(productsLocalStorage);
+    });
+  });
+}
