@@ -32,6 +32,7 @@ const displayCart = async () => {
 
     document.getElementById("cart__items").appendChild(clone);
   });
+  modifyProductQuantity();
   deleteProductFromCart();
   totalPriceAndQuantity();
 };
