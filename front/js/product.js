@@ -1,5 +1,3 @@
-// import { addProductToCart } from "./local-storage";
-
 const id = new URL(window.location.href).searchParams.get("id");
 
 let product = [];
@@ -36,6 +34,6 @@ document
     addProductToCart(
       id,
       document.getElementById("colors")?.value,
-      document.getElementById("quantity")?.value
+      +document.getElementById("quantity")?.value
     )
   );
