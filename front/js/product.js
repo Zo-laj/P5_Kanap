@@ -28,12 +28,19 @@ const productDisplay = async () => {
 
 productDisplay();
 
-document
-  .getElementById("addToCart")
-  .addEventListener("click", () =>
+document.getElementById("addToCart").addEventListener("click", () => {
+  if (document.getElementById("colors").value == "") {
+    alert("veuillez choisir une couleur");
+
+  } else if (document.getElementById("quantity").value == "0" || +document.getElementById("quantity").value > 100) {
+    alert("veuillez choisir une quantité de produit entre 1 et 100");
+
+  } else {
     addProductToCart(
       id,
       document.getElementById("colors")?.value,
       +document.getElementById("quantity")?.value
-    )
-  );
+    );
+    window.location.assign("./cart.html");
+  }
+});

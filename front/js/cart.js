@@ -8,7 +8,7 @@ const fetchItems = async () => {
 const displayCart = async () => {
   await fetchItems();
 
-  JSON.parse(localStorage.getItem(CART_KEY)).map((cartItem) => {
+  JSON.parse(localStorage.getItem(CART_KEY))?.map((cartItem) => {
     const clone = document.importNode(
       document.querySelector("#cartTemplate").content,
       true
@@ -39,67 +39,85 @@ const displayCart = async () => {
 
 displayCart();
 
-const totalPriceAndQuantity = () => {
+function totalPriceAndQuantity()  {
   let totalQuantity = 0;
   let totalPrice = 0;
 
-  JSON.parse(localStorage.getItem(CART_KEY)).forEach((cartItem) => {
+  JSON.parse(localStorage.getItem(CART_KEY))?.forEach((cartItem) => {
     const itemInfo = itemsData.find((product) => product._id == cartItem.id);
     totalQuantity += cartItem.quantity;
     totalPrice += cartItem.quantity * itemInfo.price;
   });
 
   document.getElementById("totalQuantity").textContent = totalQuantity;
-  document.getElementById("totalPrice").textContent = totalPrice;
+  document.getElementById("totalPrice").textContent = totalPrice.toLocaleString();
 };
 
 //--------------------------------Form Control-----------------------------------------------
 
-// regex email validation /^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,5})$/
-// regex nom prénom ville /^[a-zA-ZÀ-ÿ- ]*$/
 
-let products = [];
-
-JSON.parse(localStorage.getItem(CART_KEY)).forEach((el) => {
-  products.push(el.id);
-});
-
-
-function sendOrder() {
-  
-  document.getElementById("order").addEventListener("click", () => {
-    const order = {
-      contact: {
-        firstName: document.getElementById("firstName")?.value,
-        lastName: document.getElementById("lastName")?.value,
-        address: document.getElementById("address")?.value,
-        city: document.getElementById("city")?.value,
-        email: document.getElementById("email")?.value,
-      },
-      products,
-    };
-
-    console.log(order);
-    fetch("http://localhost:3000/api/products/order",{
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-      body: JSON.stringify(order),
+function sendOrder(order) {
+  fetch("http://localhost:3000/api/products/order", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    },
+    body: JSON.stringify(order),
+  })
+    .then((response) => response.json())
+    .then((order) => {
+      window.location = "./confirmation.html?orderId=" + order.orderId;
     })
-      .then((response) => response.json())
-      .then((order) => {
-        console.log("Success:", order);
-        window.location = "./confirmation.html?orderId="+ order.orderId;
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
-  });
+    .catch((error) => {
+      console.error("Error:", error);
+    });
 }
 
-sendOrder();
+document.getElementById("order").addEventListener("click", (e) => {
+  e.preventDefault();
+  let products = [];
+
+  JSON.parse(localStorage.getItem(CART_KEY))?.forEach((el) => {
+    products.push(el.id);
+  });
+
+  const order = {
+    contact: {
+      firstName: document.getElementById("firstName")?.value,
+      lastName: document.getElementById("lastName")?.value,
+      address: document.getElementById("address")?.value,
+      city: document.getElementById("city")?.value,
+      email: document.getElementById("email")?.value,
+    },
+    products,
+  };
+
+  if (
+    isNotEmpty(order.contact.firstName) &&
+    isNotEmpty(order.contact.lastName) &&
+    isNotEmpty(order.contact.address) &&
+    isNotEmpty(order.contact.city) &&
+    isNotEmpty(order.contact.email) &&
+    isValid(document.getElementById("firstNameErrorMsg").textContent) &&
+    isValid(document.getElementById("lastNameErrorMsg").textContent) &&
+    isValid(document.getElementById("addressErrorMsg").textContent) &&
+    isValid(document.getElementById("cityErrorMsg").textContent) &&
+    isValid(document.getElementById("emailErrorMsg").textContent) &&
+    products.length != 0
+  ) {
+    sendOrder(order);
+    localStorage.clear();
+  }
+});
+
+function isNotEmpty(input) {
+  return input != "" ? true : false;
+}
+
+function isValid(input) {
+  return input == "" ? true : false;
+}
 
 document.getElementById("firstName").addEventListener("change", (e) => {
   const firstNameErrorMsg = document.getElementById("firstNameErrorMsg");

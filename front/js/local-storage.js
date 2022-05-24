@@ -43,17 +43,20 @@ function deleteProductFromCart() {
     });
   });
 }
+
 function modifyProductQuantity() {
   document.querySelectorAll(".itemQuantity").forEach((btn) => {
+
     btn.addEventListener("change", (e) => {
       const productsLocalStorage = JSON.parse(localStorage.getItem(CART_KEY))
-      let modifyProduct = productsLocalStorage.find(
+
+      let newProductQuantity = productsLocalStorage.find(
         (product) => 
         product.id === btn.closest("article").getAttribute("data-id") && 
         product.color === btn.closest("article").getAttribute("data-color")
       );
-      modifyProduct.quantity = +e.target.value
 
+      newProductQuantity.quantity = +e.target.value
 
       setCart(productsLocalStorage);
       totalPriceAndQuantity();
