@@ -1,14 +1,15 @@
-const template = document.querySelector("#productsTemplate");
-const itemsSection = document.querySelector("#items");
 let items = [];
 
-const fetchItems = async () => {
+async function fetchItems() {
   const result = await fetch("http://localhost:3000/api/products");
   items = await result.json();
 };
 
-const displayItems = async () => {
+async function displayItems() {
   await fetchItems();
+  
+  const template = document.querySelector("#productsTemplate");
+  const itemsSection = document.querySelector("#items");
 
   items.forEach((item) => {
     const clone = document.importNode(template.content, true);

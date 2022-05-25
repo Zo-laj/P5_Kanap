@@ -1,13 +1,12 @@
 const id = new URL(window.location.href).searchParams.get("id");
-
 let product = [];
 
-const fetchProduct = async () => {
+async function fetchProduct() {
   const result = await fetch("http://localhost:3000/api/products/" + id);
   product = await result.json();
 };
 
-const productDisplay = async () => {
+async function productDisplay() {
   await fetchProduct();
 
   document.getElementById("itemImg").setAttribute("src", product.imageUrl);

@@ -1,11 +1,11 @@
 let itemsData = [];
 
-const fetchItems = async () => {
+async function fetchItems() {
   const result = await fetch("http://localhost:3000/api/products");
   itemsData = await result.json();
 };
 
-const displayCart = async () => {
+async function displayCart() {
   await fetchItems();
 
   JSON.parse(localStorage.getItem(CART_KEY))?.map((cartItem) => {
@@ -25,13 +25,12 @@ const displayCart = async () => {
     clone.querySelector("img").setAttribute("alt", cartItemInfo.altTxt);
     clone.getElementById("cartItemName").textContent = cartItemInfo.name;
     clone.getElementById("cartItemColor").textContent = cartItem.color;
-    clone.getElementById(
-      "cartItemPrice"
-    ).textContent = `${cartItemInfo.price} €`;
+    clone.getElementById("cartItemPrice").textContent = `${cartItemInfo.price} €`;
     clone.querySelector("input").setAttribute("value", cartItem.quantity);
 
     document.getElementById("cart__items").appendChild(clone);
   });
+  
   modifyProductQuantity();
   deleteProductFromCart();
   totalPriceAndQuantity();
