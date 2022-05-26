@@ -30,7 +30,7 @@ async function displayCart() {
 
     document.getElementById("cart__items").appendChild(clone);
   });
-  
+
   modifyProductQuantity();
   deleteProductFromCart();
   totalPriceAndQuantity();
@@ -60,7 +60,7 @@ function sendOrder(order) {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Accept: "application/json",
+      "Accept": "application/json",
     },
     body: JSON.stringify(order),
   })
@@ -98,11 +98,6 @@ document.getElementById("order").addEventListener("click", (e) => {
     isNotEmpty(order.contact.address) &&
     isNotEmpty(order.contact.city) &&
     isNotEmpty(order.contact.email) &&
-    isValid(document.getElementById("firstNameErrorMsg").textContent) &&
-    isValid(document.getElementById("lastNameErrorMsg").textContent) &&
-    isValid(document.getElementById("addressErrorMsg").textContent) &&
-    isValid(document.getElementById("cityErrorMsg").textContent) &&
-    isValid(document.getElementById("emailErrorMsg").textContent) &&
     products.length != 0
   ) {
     sendOrder(order);
@@ -111,57 +106,39 @@ document.getElementById("order").addEventListener("click", (e) => {
 });
 
 function isNotEmpty(input) {
-  return input != "" ? true : false;
+  return input != "";
 }
 
-function isValid(input) {
-  return input == "" ? true : false;
-}
+[
+  {key: "firstName", regex: /^[a-zA-ZÀ-ÿ- ]*$/},
+  {key: "lastName", regex: /^[a-zA-ZÀ-ÿ- ]*$/},
+  {key: "address", regex: /^[a-zA-ZÀ-ÿ1-9- ]*$/},
+  {key: "city", regex: /^[a-zA-ZÀ-ÿ- ]*$/},
+  {key: "email", regex: /^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,5})$/}
 
-document.getElementById("firstName").addEventListener("change", (e) => {
-  const firstNameErrorMsg = document.getElementById("firstNameErrorMsg");
-  if (!/^[a-zA-ZÀ-ÿ-]*$/.test(e.target.value)) {
-    firstNameErrorMsg.textContent =
-      "Ne peut contenir de chiffres ni de caractères spéciaux";
-  } else {
-    firstNameErrorMsg.textContent = "";
-  }
-});
+].forEach((input) => {
+  document.getElementById(input.key).addEventListener("change", (e) => {
+    const errorMsg = document.getElementById(`${input.key}ErrorMsg`);
+    const orderBtn = document.getElementById("order");
+    orderBtn.disabled = true
 
-document.getElementById("lastName").addEventListener("change", (e) => {
-  const lastNameErrorMsg = document.getElementById("lastNameErrorMsg");
-  if (!/^[a-zA-ZÀ-ÿ-]*$/.test(e.target.value)) {
-    lastNameErrorMsg.textContent =
-      "Ne peut contenir de chiffres ni de caractères spéciaux";
-  } else {
-    lastNameErrorMsg.textContent = "";
-  }
-});
+    if (!input.regex.test(e.target.value)) {
+      if(input.key == "email") {
+        errorMsg.textContent = "format de l'adresse email invalide"
+      } else if (input.key == "address") {
+        errorMsg.textContent = "Ne peut contenir de caractère spéciaux"
+      } else {
+        errorMsg.textContent =
+          "Ne peut contenir de chiffres ni de caractères spéciaux";
+      }
 
-document.getElementById("address").addEventListener("change", (e) => {
-  const addressErrorMsg = document.getElementById("addressErrorMsg");
-  if (!/^[a-zA-ZÀ-ÿ1-9- ]*$/.test(e.target.value)) {
-    addressErrorMsg.textContent = "Ne peux contenir de caractères spéciaux";
-  } else {
-    addressErrorMsg.textContent = "";
-  }
-});
+    } else if (e.target.value == "" || e.target.value == null) {
+      errorMsg.textContent = "Veuillez remplir ce champ";
 
-document.getElementById("city").addEventListener("change", (e) => {
-  const cityErrorMsg = document.getElementById("cityErrorMsg");
-  if (!/^[a-zA-ZÀ-ÿ- ]*$/.test(e.target.value)) {
-    cityErrorMsg.textContent =
-      "Ne peux contenir de chiffre ni de caractères spéciaux";
-  } else {
-    cityErrorMsg.textContent = "";
-  }
-});
+    } else {
+      errorMsg.textContent = "";
+      orderBtn.disabled = false;
+    }
+  });
+})
 
-document.getElementById("email").addEventListener("change", (e) => {
-  const emailErrorMsg = document.getElementById("emailErrorMsg");
-  if (!/^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,5})$/.test(e.target.value)) {
-    emailErrorMsg.textContent = "Format de l'adresse mail invalide";
-  } else {
-    emailErrorMsg.textContent = "";
-  }
-});
