@@ -1,11 +1,14 @@
 const id = new URL(window.location.href).searchParams.get("id");
 let product = [];
 
+
+// Récupère les données du produit
 async function fetchProduct() {
   const result = await fetch("http://localhost:3000/api/products/" + id);
   product = await result.json();
 };
 
+// Affiche le produit
 async function productDisplay() {
   await fetchProduct();
 
@@ -27,6 +30,7 @@ async function productDisplay() {
 
 productDisplay();
 
+// Ajoute le produit dans le local storage
 document.getElementById("addToCart").addEventListener("click", () => {
   if (document.getElementById("colors").value == "") {
     alert("veuillez choisir une couleur");

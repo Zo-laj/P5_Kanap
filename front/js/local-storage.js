@@ -1,9 +1,11 @@
 const CART_KEY = "cart";
 
+// initialise le panier
 function setCart(cart) {
   localStorage.setItem(CART_KEY, JSON.stringify(cart));
 }
 
+//ajoute un produit au panier
 function addProductToCart(id, color, quantity) {
   const productsLocalStorage = JSON.parse(localStorage.getItem(CART_KEY));
 
@@ -13,7 +15,7 @@ function addProductToCart(id, color, quantity) {
     );
 
     if (existingItem != null) {
-      existingItem.quantity = existingItem.quantity + quantity;
+      existingItem.quantity += quantity;
     } else {
       productsLocalStorage.push({
         id,
@@ -28,6 +30,7 @@ function addProductToCart(id, color, quantity) {
   }
 }
 
+// Supprime un produit du panier
 function deleteProductFromCart() {
   document.querySelectorAll(".deleteItem").forEach((btn) => {
     btn.addEventListener("click", () => {
@@ -44,6 +47,7 @@ function deleteProductFromCart() {
   });
 }
 
+// Modifie la quantité d'un produit dans le panier
 function modifyProductQuantity() {
   document.querySelectorAll(".itemQuantity").forEach((btn) => {
 
@@ -57,9 +61,13 @@ function modifyProductQuantity() {
       );
 
       newProductQuantity.quantity = +e.target.value
-
-      setCart(productsLocalStorage);
-      totalPriceAndQuantity();
+      
+      if (+e.target.value == 0 || +e.target.value > 100) {
+        alert('Veuillez saisir une quantité comprise entre 1 et 100')
+      } else {
+        setCart(productsLocalStorage);
+        totalPriceAndQuantity();
+      }
     });
   });
 }

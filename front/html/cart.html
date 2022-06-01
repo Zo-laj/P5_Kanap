@@ -149,14 +149,26 @@
               <form method="get" class="cart__order__form">
                 <div class="cart__order__form__question">
                   <label for="firstName">Prénom: </label>
-                  <input type="text" name="firstName" id="firstName" required />
+                  <input
+                    type="text"
+                    name="firstName"
+                    minlength="3"
+                    id="firstName"
+                    required
+                  />
                   <p id="firstNameErrorMsg">
                     <!-- ci est un message d'erreur -->
                   </p>
                 </div>
                 <div class="cart__order__form__question">
                   <label for="lastName">Nom: </label>
-                  <input type="text" name="lastName" id="lastName" required />
+                  <input
+                    type="text"
+                    name="lastName"
+                    minlength="2"
+                    id="lastName"
+                    required
+                  />
                   <p id="lastNameErrorMsg"></p>
                 </div>
                 <div class="cart__order__form__question">
@@ -166,7 +178,13 @@
                 </div>
                 <div class="cart__order__form__question">
                   <label for="city">Ville: </label>
-                  <input type="text" name="city" id="city" required />
+                  <input
+                    type="text"
+                    name="city"
+                    minlength="3"
+                    id="city"
+                    required
+                  />
                   <p id="cityErrorMsg"></p>
                 </div>
                 <div class="cart__order__form__question">
@@ -175,12 +193,7 @@
                   <p id="emailErrorMsg"></p>
                 </div>
                 <div class="cart__order__form__submit">
-                  <input
-                    type="submit"
-                    value="Commander !"
-                    id="order"
-                    disabled
-                  />
+                  <input type="submit" value="Commander !" id="order" />
                 </div>
               </form>
             </div>

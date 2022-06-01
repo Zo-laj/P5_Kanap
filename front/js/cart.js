@@ -1,10 +1,12 @@
 let itemsData = [];
 
+// Récupère les données de l'api
 async function fetchItems() {
   const result = await fetch("http://localhost:3000/api/products");
   itemsData = await result.json();
 };
 
+// Affiche le panier
 async function displayCart() {
   await fetchItems();
 
@@ -38,6 +40,7 @@ async function displayCart() {
 
 displayCart();
 
+// Prix et quantité total du panier
 function totalPriceAndQuantity()  {
   let totalQuantity = 0;
   let totalPrice = 0;
@@ -52,9 +55,8 @@ function totalPriceAndQuantity()  {
   document.getElementById("totalPrice").textContent = totalPrice.toLocaleString();
 };
 
-//--------------------------------Form Control-----------------------------------------------
 
-
+// Envoi la commande 
 function sendOrder(order) {
   fetch("http://localhost:3000/api/products/order", {
     method: "POST",
@@ -73,6 +75,7 @@ function sendOrder(order) {
     });
 }
 
+//Contrôle panier et formulaire puis envoi la commande
 document.getElementById("order").addEventListener("click", (e) => {
   e.preventDefault();
   let products = [];
@@ -92,35 +95,40 @@ document.getElementById("order").addEventListener("click", (e) => {
     products,
   };
 
-  if (
-    isNotEmpty(order.contact.firstName) &&
-    isNotEmpty(order.contact.lastName) &&
-    isNotEmpty(order.contact.address) &&
-    isNotEmpty(order.contact.city) &&
-    isNotEmpty(order.contact.email) &&
-    products.length != 0
-  ) {
+  if (products.length == 0) {
+    alert("le panier est vide")
+  } else if (isEmpty(order.contact.firstName) ||
+    isEmpty(order.contact.lastName) ||
+    isEmpty(order.contact.address) ||
+    isEmpty(order.contact.city) ||
+    isEmpty(order.contact.email) )
+  {
+    alert("Le formulaire est incomplet") 
+  }
+   else {
     sendOrder(order);
-    localStorage.clear();
+    //localStorage.clear();
   }
 });
 
-function isNotEmpty(input) {
-  return input != "";
+// Vérifie si les champs du formulaire sont remplis
+function isEmpty(input) {
+  return input == "";
 }
 
+//Contrôle la validité des entrées du formulaire
 [
-  {key: "firstName", regex: /^[a-zA-ZÀ-ÿ- ]*$/},
-  {key: "lastName", regex: /^[a-zA-ZÀ-ÿ- ]*$/},
-  {key: "address", regex: /^[a-zA-ZÀ-ÿ1-9- ]*$/},
-  {key: "city", regex: /^[a-zA-ZÀ-ÿ- ]*$/},
+  {key: "firstName", regex: /^[^-\s][a-zA-ZÀ-ÿ- ]{2,}$/},
+  {key: "lastName", regex: /^[^-\s][a-zA-ZÀ-ÿ- ]{2,}$/},
+  {key: "address", regex: /^[^-\s][a-zA-ZÀ-ÿ1-9- ]*$/},
+  {key: "city", regex: /^[^-\s][a-zA-ZÀ-ÿ- ]{2,}$/},
   {key: "email", regex: /^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,5})$/}
 
 ].forEach((input) => {
   document.getElementById(input.key).addEventListener("change", (e) => {
     const errorMsg = document.getElementById(`${input.key}ErrorMsg`);
     const orderBtn = document.getElementById("order");
-    orderBtn.disabled = true
+    orderBtn.disabled = true;
 
     if (!input.regex.test(e.target.value)) {
       if(input.key == "email") {
@@ -129,7 +137,7 @@ function isNotEmpty(input) {
         errorMsg.textContent = "Ne peut contenir de caractère spéciaux"
       } else {
         errorMsg.textContent =
-          "Ne peut contenir de chiffres ni de caractères spéciaux";
+          "Ne peut contenir de chiffres ni de caractères spéciaux. Doit contenir au moins 3 caractères";
       }
 
     } else if (e.target.value == "" || e.target.value == null) {

@@ -1,10 +1,13 @@
 let items = [];
 
+
+// Récupère les données de l'api
 async function fetchItems() {
   const result = await fetch("http://localhost:3000/api/products");
   items = await result.json();
 };
 
+// Affichage dynamique des produits
 async function displayItems() {
   await fetchItems();
   
