@@ -36,6 +36,7 @@ async function displayCart() {
   modifyProductQuantity();
   deleteProductFromCart();
   totalPriceAndQuantity();
+  formController();
 };
 
 displayCart();
@@ -56,7 +57,11 @@ function totalPriceAndQuantity()  {
 };
 
 
-// Envoi la commande 
+/**
+ * 
+ * @param {*} order 
+ * @returns 
+ */
 function sendOrder(order) {
   fetch("http://localhost:3000/api/products/order", {
     method: "POST",
@@ -97,23 +102,41 @@ document.getElementById("order").addEventListener("click", (e) => {
 
   if (products.length == 0) {
     alert("le panier est vide")
-  } else if (isEmpty(order.contact.firstName) ||
-    isEmpty(order.contact.lastName) ||
-    isEmpty(order.contact.address) ||
-    isEmpty(order.contact.city) ||
-    isEmpty(order.contact.email) )
-  {
-    alert("Le formulaire est incomplet") 
-  }
-   else {
+  } else {
     sendOrder(order);
     //localStorage.clear();
   }
 });
 
-// Vérifie si les champs du formulaire sont remplis
+// Vérifie si l'élément est vide
 function isEmpty(input) {
   return input == "";
+}
+
+
+// Désactive le bouton d'envoi tant que les champs ne sont pas remplis correctements
+function formController() {
+  const orderBtn = document.getElementById("order");
+  orderBtn.disabled = true;
+  orderBtn.style.backgroundColor = 'grey';
+  order.classList.remove('order-btn')
+
+  if (!isEmpty(document.getElementById("firstName").value) &&
+    !isEmpty(document.getElementById("lastName").value) &&
+    !isEmpty(document.getElementById("address").value) &&
+    !isEmpty(document.getElementById("city").value) &&
+    !isEmpty(document.getElementById("email").value) &&
+    document.getElementById("firstNameErrorMsg").textContent == "" &&
+    document.getElementById("lastNameErrorMsg").textContent == "" &&
+    document.getElementById("addressErrorMsg").textContent == "" &&
+    document.getElementById("cityErrorMsg").textContent == "" &&
+    document.getElementById("emailErrorMsg").textContent == "")
+    {
+      orderBtn.disabled = false;
+      orderBtn.style.backgroundColor = 'var(--secondary-color)'
+      orderBtn.classList.add('order-btn')
+
+    } 
 }
 
 //Contrôle la validité des entrées du formulaire
@@ -127,25 +150,23 @@ function isEmpty(input) {
 ].forEach((input) => {
   document.getElementById(input.key).addEventListener("change", (e) => {
     const errorMsg = document.getElementById(`${input.key}ErrorMsg`);
-    const orderBtn = document.getElementById("order");
-    orderBtn.disabled = true;
 
     if (!input.regex.test(e.target.value)) {
-      if(input.key == "email") {
+      formController();
+      if (e.target.value == "" || e.target.value == null) {
+        errorMsg.textContent = "Veuillez remplir ce champ";
+      }
+        else if(input.key === "email") {
         errorMsg.textContent = "format de l'adresse email invalide"
-      } else if (input.key == "address") {
+      } else if (input.key === "address") {
         errorMsg.textContent = "Ne peut contenir de caractère spéciaux"
       } else {
         errorMsg.textContent =
           "Ne peut contenir de chiffres ni de caractères spéciaux. Doit contenir au moins 3 caractères";
       }
-
-    } else if (e.target.value == "" || e.target.value == null) {
-      errorMsg.textContent = "Veuillez remplir ce champ";
-
     } else {
       errorMsg.textContent = "";
-      orderBtn.disabled = false;
+      formController();
     }
   });
 })
