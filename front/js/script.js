@@ -1,13 +1,18 @@
 let items = [];
 
-
-// Récupère les données de l'api
+/**
+ * Get items data using fetch API
+ * @return { Promise } 
+ */
 async function fetchItems() {
   const result = await fetch("http://localhost:3000/api/products");
   items = await result.json();
 };
 
-// Affichage dynamique des produits
+/**
+ * Display dynamically the fetch items by cloning a template
+ * @param { Array.<Object> } items
+ */
 async function displayItems() {
   await fetchItems();
   

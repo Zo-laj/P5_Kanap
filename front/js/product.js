@@ -1,14 +1,19 @@
 const id = new URL(window.location.href).searchParams.get("id");
 let product = [];
 
-
-// Récupère les données du produit
+/**
+ * Get the selected item data using fetch API
+ * @return { Promise } 
+ */
 async function fetchProduct() {
   const result = await fetch("http://localhost:3000/api/products/" + id);
   product = await result.json();
 };
 
-// Affiche le produit
+/**
+ * Display the fetch item 
+ * @param { Array.<String> } product
+ */
 async function productDisplay() {
   await fetchProduct();
 
@@ -30,7 +35,12 @@ async function productDisplay() {
 
 productDisplay();
 
-// Ajoute le produit dans le local storage
+/**
+ * On click, store the selected item in local storage
+ * @param { String } id
+ * @param { String } color
+ * @param { Number } quantity
+ */
 document.getElementById("addToCart").addEventListener("click", () => {
   if (document.getElementById("colors").value == "") {
     alert("veuillez choisir une couleur");
@@ -44,6 +54,6 @@ document.getElementById("addToCart").addEventListener("click", () => {
       document.getElementById("colors")?.value,
       +document.getElementById("quantity")?.value
     );
-    window.location.assign("./cart.html");
+    //window.location.assign("./cart.html");
   }
 });

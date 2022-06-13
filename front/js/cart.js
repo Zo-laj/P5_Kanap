@@ -1,20 +1,24 @@
 let itemsData = [];
 
-// Récupère les données de l'api
+/**
+ * Get items data using fetch API
+ * @param { String } url
+ * @return { Promise } 
+ */
 async function fetchItems() {
   const result = await fetch("http://localhost:3000/api/products");
   itemsData = await result.json();
 };
 
-// Affiche le panier
+/**
+ * Display dynamically the stored items by cloning a template 
+ * @param { Array.<Object> } items
+ */
 async function displayCart() {
   await fetchItems();
 
   JSON.parse(localStorage.getItem(CART_KEY))?.map((cartItem) => {
-    const clone = document.importNode(
-      document.querySelector("#cartTemplate").content,
-      true
-    );
+    const clone = document.importNode(document.querySelector("#cartTemplate").content, true);
     const cartItemInfo = itemsData.find(
       (product) => product._id == cartItem.id
     );
@@ -41,7 +45,10 @@ async function displayCart() {
 
 displayCart();
 
-// Prix et quantité total du panier
+/**
+ * Sum the cart's total price and quantity
+ * @param { Array.<Object> } cart
+ */
 function totalPriceAndQuantity()  {
   let totalQuantity = 0;
   let totalPrice = 0;
@@ -58,9 +65,9 @@ function totalPriceAndQuantity()  {
 
 
 /**
- * 
- * @param {*} order 
- * @returns 
+ * Post the order using fetch api
+ * @param {*} order
+ * @return { String } orderId
  */
 function sendOrder(order) {
   fetch("http://localhost:3000/api/products/order", {
@@ -80,7 +87,18 @@ function sendOrder(order) {
     });
 }
 
-//Contrôle panier et formulaire puis envoi la commande
+/**
+ * On click get the order, send it and clear the cart
+ * @param { Object.<Object, Array> } order
+ * @param { Object } order.contact 
+ * @param { String } contact.firstname
+ * @param { String } contact.lastname
+ * @param { String } contact.address
+ * @param { String } contact.city
+ * @param { String } contact.email
+ * @param { Array } order.products
+ * @param { String } products.id 
+ */
 document.getElementById("order").addEventListener("click", (e) => {
   e.preventDefault();
   let products = [];
@@ -104,17 +122,22 @@ document.getElementById("order").addEventListener("click", (e) => {
     alert("le panier est vide")
   } else {
     sendOrder(order);
-    //localStorage.clear();
+    localStorage.clear();
   }
 });
 
-// Vérifie si l'élément est vide
+/**
+ * Check if the input is empty
+ * @param {*} input 
+ * @returns { Boolean }
+ */
 function isEmpty(input) {
   return input == "";
 }
 
-
-// Désactive le bouton d'envoi tant que les champs ne sont pas remplis correctements
+/**
+ * Disabled the send order button until the form is filled correctly
+ */
 function formController() {
   const orderBtn = document.getElementById("order");
   orderBtn.disabled = true;
@@ -139,7 +162,9 @@ function formController() {
     } 
 }
 
-//Contrôle la validité des entrées du formulaire
+/**
+ * Display error messages on the form inputs 
+ */
 [
   {key: "firstName", regex: /^[^-\s][a-zA-ZÀ-ÿ- ]{2,}$/},
   {key: "lastName", regex: /^[^-\s][a-zA-ZÀ-ÿ- ]{2,}$/},
@@ -152,7 +177,6 @@ function formController() {
     const errorMsg = document.getElementById(`${input.key}ErrorMsg`);
 
     if (!input.regex.test(e.target.value)) {
-      formController();
       if (e.target.value == "" || e.target.value == null) {
         errorMsg.textContent = "Veuillez remplir ce champ";
       }
@@ -164,6 +188,7 @@ function formController() {
         errorMsg.textContent =
           "Ne peut contenir de chiffres ni de caractères spéciaux. Doit contenir au moins 3 caractères";
       }
+      formController();
     } else {
       errorMsg.textContent = "";
       formController();

@@ -1,11 +1,19 @@
 const CART_KEY = "cart";
 
-// initialise le panier
+/**
+ * Set a new cart in the local storage
+ * @param { Array.<Object> } cart 
+ */
 function setCart(cart) {
   localStorage.setItem(CART_KEY, JSON.stringify(cart));
 }
 
-//ajoute un produit au panier
+/**
+ * Add new object to the cart / update quantity if same existing object 
+ * @param { String } id 
+ * @param { String } color 
+ * @param { String } quantity 
+ */
 function addProductToCart(id, color, quantity) {
   const productsLocalStorage = JSON.parse(localStorage.getItem(CART_KEY));
 
@@ -30,7 +38,9 @@ function addProductToCart(id, color, quantity) {
   }
 }
 
-// Supprime un produit du panier
+/**
+ * Delete product from the cart on click
+ */
 function deleteProductFromCart() {
   document.querySelectorAll(".deleteItem").forEach((btn) => {
     btn.addEventListener("click", () => {
@@ -47,7 +57,9 @@ function deleteProductFromCart() {
   });
 }
 
-// Modifie la quantité d'un produit dans le panier
+/**
+ * Update the product quantity on change event 
+ */
 function modifyProductQuantity() {
   document.querySelectorAll(".itemQuantity").forEach((btn) => {
 
@@ -63,7 +75,8 @@ function modifyProductQuantity() {
       newProductQuantity.quantity = +e.target.value
       
       if (+e.target.value == 0 || +e.target.value > 100) {
-        alert('Veuillez saisir une quantité comprise entre 1 et 100')
+        alert('Veuillez saisir une quantité comprise entre 1 et 100');
+
       } else {
         setCart(productsLocalStorage);
         totalPriceAndQuantity();
