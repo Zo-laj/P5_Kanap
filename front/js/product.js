@@ -12,7 +12,7 @@ async function fetchProduct() {
 
 /**
  * Display the fetch item 
- * @param { Array.<String> } product
+ * @param { Object } product
  */
 async function productDisplay() {
   await fetchProduct();

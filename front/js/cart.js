@@ -2,7 +2,6 @@ let itemsData = [];
 
 /**
  * Get items data using fetch API
- * @param { String } url
  * @return { Promise } 
  */
 async function fetchItems() {
@@ -64,76 +63,6 @@ function totalPriceAndQuantity()  {
 };
 
 
-/**
- * Post the order using fetch api
- * @param {*} order
- * @return { String } orderId
- */
-function sendOrder(order) {
-  fetch("http://localhost:3000/api/products/order", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Accept": "application/json",
-    },
-    body: JSON.stringify(order),
-  })
-    .then((response) => response.json())
-    .then((order) => {
-      window.location = "./confirmation.html?orderId=" + order.orderId;
-    })
-    .catch((error) => {
-      console.error("Error:", error);
-    });
-}
-
-/**
- * On click get the order, send it and clear the cart
- * @param { Object.<Object, Array> } order
- * @param { Object } order.contact 
- * @param { String } contact.firstname
- * @param { String } contact.lastname
- * @param { String } contact.address
- * @param { String } contact.city
- * @param { String } contact.email
- * @param { Array } order.products
- * @param { String } products.id 
- */
-document.getElementById("order").addEventListener("click", (e) => {
-  e.preventDefault();
-  let products = [];
-
-  JSON.parse(localStorage.getItem(CART_KEY))?.forEach((el) => {
-    products.push(el.id);
-  });
-
-  const order = {
-    contact: {
-      firstName: document.getElementById("firstName")?.value,
-      lastName: document.getElementById("lastName")?.value,
-      address: document.getElementById("address")?.value,
-      city: document.getElementById("city")?.value,
-      email: document.getElementById("email")?.value,
-    },
-    products,
-  };
-
-  if (products.length == 0) {
-    alert("le panier est vide")
-  } else {
-    sendOrder(order);
-    localStorage.clear();
-  }
-});
-
-/**
- * Check if the input is empty
- * @param {*} input 
- * @returns { Boolean }
- */
-function isEmpty(input) {
-  return input == "";
-}
 
 /**
  * Disabled the send order button until the form is filled correctly
@@ -144,11 +73,11 @@ function formController() {
   orderBtn.style.backgroundColor = 'grey';
   order.classList.remove('order-btn')
 
-  if (!isEmpty(document.getElementById("firstName").value) &&
-    !isEmpty(document.getElementById("lastName").value) &&
-    !isEmpty(document.getElementById("address").value) &&
-    !isEmpty(document.getElementById("city").value) &&
-    !isEmpty(document.getElementById("email").value) &&
+  if (document.getElementById("firstName").value &&
+    document.getElementById("lastName").value &&
+    document.getElementById("address").value &&
+    document.getElementById("city").value &&
+    document.getElementById("email").value &&
     document.getElementById("firstNameErrorMsg").textContent == "" &&
     document.getElementById("lastNameErrorMsg").textContent == "" &&
     document.getElementById("addressErrorMsg").textContent == "" &&
@@ -164,6 +93,10 @@ function formController() {
 
 /**
  * Display error messages on the form inputs 
+ * @param { String } key
+ * @param { String } regex
+ * @param { String } input
+ * @returns { HTMLElement } errorMsg
  */
 [
   {key: "firstName", regex: /^[^-\s][a-zA-ZÀ-ÿ- ]{2,}$/},
@@ -196,3 +129,65 @@ function formController() {
   });
 })
 
+
+/**
+ * Post the order using fetch api with post method
+ * @param { Object.<Object, Array> } order
+ * @param { Object } order.contact 
+ * @param { String } contact.firstname
+ * @param { String } contact.lastname
+ * @param { String } contact.address
+ * @param { String } contact.city
+ * @param { String } contact.email
+ * @param { Object[]} order.products
+ * @param { String } products[].id 
+ * @return { String } orderId
+ */
+function sendOrder(order) {
+  fetch("http://localhost:3000/api/products/order", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+    },
+    body: JSON.stringify(order),
+  })
+    .then((response) => response.json())
+    .then((order) => {
+      window.location = "./confirmation.html?orderId=" + order.orderId;
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+    });
+}
+    
+/**
+ * On click get the order, send it and clear the cart
+ */
+document.getElementById("order").addEventListener("click", (e) => {
+  e.preventDefault();
+  let products = [];
+
+  JSON.parse(localStorage.getItem(CART_KEY))?.forEach((el) => {
+    products.push(el.id);
+  });
+
+  const order = {
+    contact: {
+      firstName: document.getElementById("firstName")?.value,
+      lastName: document.getElementById("lastName")?.value,
+      address: document.getElementById("address")?.value,
+      city: document.getElementById("city")?.value,
+      email: document.getElementById("email")?.value,
+    },
+    products,
+  };
+
+  if (products.length == 0) {
+    alert("le panier est vide")
+    
+  } else {
+    sendOrder(order);
+    localStorage.clear();
+  }
+});

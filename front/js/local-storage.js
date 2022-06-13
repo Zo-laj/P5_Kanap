@@ -2,7 +2,7 @@ const CART_KEY = "cart";
 
 /**
  * Set a new cart in the local storage
- * @param { Array.<Object> } cart 
+ * @param { Array } cart 
  */
 function setCart(cart) {
   localStorage.setItem(CART_KEY, JSON.stringify(cart));
@@ -12,7 +12,8 @@ function setCart(cart) {
  * Add new object to the cart / update quantity if same existing object 
  * @param { String } id 
  * @param { String } color 
- * @param { String } quantity 
+ * @param { String } quantity
+ * @returns { Array.<Object> } 
  */
 function addProductToCart(id, color, quantity) {
   const productsLocalStorage = JSON.parse(localStorage.getItem(CART_KEY));
@@ -40,6 +41,8 @@ function addProductToCart(id, color, quantity) {
 
 /**
  * Delete product from the cart on click
+ * @param { HTMLElement } btn
+ * @returns { Array.<Object> } 
  */
 function deleteProductFromCart() {
   document.querySelectorAll(".deleteItem").forEach((btn) => {
@@ -59,6 +62,8 @@ function deleteProductFromCart() {
 
 /**
  * Update the product quantity on change event 
+ * @param { HTMLElement } btn
+ * @returns { Array.<Object> } 
  */
 function modifyProductQuantity() {
   document.querySelectorAll(".itemQuantity").forEach((btn) => {
