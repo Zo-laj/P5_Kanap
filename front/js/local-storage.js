@@ -76,16 +76,15 @@ function modifyProductQuantity() {
         product.id === btn.closest("article").getAttribute("data-id") && 
         product.color === btn.closest("article").getAttribute("data-color")
       );
-
-      newProductQuantity.quantity = +e.target.value
       
-      if (+e.target.value == 0 || +e.target.value > 100) {
+      if (+e.target.value <= 0 || +e.target.value > 100) {
         alert('Veuillez saisir une quantité comprise entre 1 et 100');
-
-      } else {
-        setCart(productsLocalStorage);
-        totalPriceAndQuantity();
+        e.target.value = 1
       }
+
+      newProductQuantity.quantity = +e.target.value;
+      setCart(productsLocalStorage);
+      totalPriceAndQuantity();
     });
   });
 }

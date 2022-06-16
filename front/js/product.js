@@ -42,17 +42,20 @@ productDisplay();
  * @param { Number } quantity
  */
 document.getElementById("addToCart").addEventListener("click", () => {
-  if (document.getElementById("colors").value == "") {
+  const color = document.getElementById("colors").value;
+  const quantity = +document.getElementById("quantity").value;
+
+  if (color == "") {
     alert("veuillez choisir une couleur");
 
-  } else if (document.getElementById("quantity").value == "0" || +document.getElementById("quantity").value > 100) {
+  } else if (quantity <= 0 || quantity > 100) {
     alert("veuillez choisir une quantité de produit entre 1 et 100");
 
   } else {
     addProductToCart(
       id,
-      document.getElementById("colors")?.value,
-      +document.getElementById("quantity")?.value
+      color,
+      quantity
     );
     //window.location.assign("./cart.html");
   }
